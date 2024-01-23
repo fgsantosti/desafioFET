@@ -35,6 +35,8 @@ Seu desafio é criar uma ferramenta de conversão automática que permita aos us
 
 Este desafio permitirá que os alunos do curso de Análise e Desenvolvimento de Sistemas apliquem seus conhecimentos em manipulação de dados, algoritmos e interfaces de usuário enquanto abordam um problema prático enfrentado pelo IFPI campus Corrente.
 
+**Resolução do Problema**
+
 **Conversor - Turmas**
 
 ```python
