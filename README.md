@@ -34,3 +34,132 @@ Seu desafio é criar uma ferramenta de conversão automática que permita aos us
 - A eficiência do algoritmo de conversão e a facilidade de uso da interface (se implementada) serão critérios de avaliação importantes.
 
 Este desafio permitirá que os alunos do curso de Análise e Desenvolvimento de Sistemas apliquem seus conhecimentos em manipulação de dados, algoritmos e interfaces de usuário enquanto abordam um problema prático enfrentado pelo IFPI campus Corrente.
+
+**Conversor - Turmas**
+
+```python
+import pandas as pd
+import os
+
+
+# Leitura do arquivo CSV
+csv_file = 'horarios.csv'
+df = pd.read_csv(csv_file)
+#df = pd.read_csv(csv_file, encoding='latin1', delimiter=';')
+
+def conversor_excel_turmas(df):
+    # Mapeamento dos dias da semana para uma ordem específica
+    dias_da_semana_ordem = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira']
+
+    # Mapeamento das horas do dia para uma ordem específica
+    horas_dia_ordem = ['7 h', '8 h', '9 h', '10 h', '11 h', '12 h', '13 h', '14 h', '15 h', '16 h', '17 h', '18 h', '19 h', '20 h', '21 h']
+
+    # Organizar os dados por turma, dia da semana e hora da aula
+    turmas = df['Students Sets'].unique()
+
+    for turma in turmas:
+        # Filtrar o DataFrame pela turma
+        turma_df = df[df['Students Sets'] == turma]
+        # Organizar os dados por dia da semana e hora da aula
+        turma_df = turma_df.sort_values(by=['Day', 'Hour'])
+
+        # Criar um DataFrame vazio para o horário da turma
+        horario_turma = pd.DataFrame(index=horas_dia_ordem, columns=dias_da_semana_ordem)
+
+        # Preencher o DataFrame com os dados da turma
+        for index, row in turma_df.iterrows():
+            horario_turma.loc[row['Hour'], row['Day']] = f"{row['Subject']} - {row['Teachers']}"
+        
+        # Criar um nome para o arquivo Excel
+        excel_file = f'horario_turma_{turma}.xlsx'
+
+        # Salvar o horário da turma no arquivo Excel
+        horario_turma.to_excel(excel_file)
+
+
+def join_excel_turmas():    
+    # Pasta contendo os arquivos .xlsx
+    pasta_excel = '.'
+
+    # Listar todos os arquivos .xlsx na pasta
+    arquivos_excel = [arquivo for arquivo in os.listdir(pasta_excel) if arquivo.endswith('.xlsx')]
+
+    # Criar um DataFrame vazio para consolidar todos os dados
+    dados_consolidados = pd.DataFrame()
+
+    # Iterar sobre os arquivos e concatenar os DataFrames
+    for arquivo in arquivos_excel:
+        caminho_arquivo = os.path.join(pasta_excel, arquivo)
+        df_temp = pd.read_excel(caminho_arquivo)
+        dados_consolidados = pd.concat([dados_consolidados, df_temp])
+
+    # Salvar os dados consolidados em um único arquivo .xlsx
+    excel_output_file = 'horarios_excel.xlsx'
+    dados_consolidados.to_excel(excel_output_file, index=False)
+
+
+conversor_excel_turmas(df)
+join_excel_turmas()
+```
+
+**Conversor - Professor**
+
+```python
+import pandas as pd
+import os
+# Leitura do arquivo CSV
+csv_file = 'horarios.csv'
+df = pd.read_csv(csv_file)
+#df = pd.read_csv(csv_file, encoding='latin1', delimiter=';')
+
+def conversor_excel_professor(df):
+    # Mapeamento dos dias da semana para uma ordem específica
+    dias_da_semana_ordem = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira']
+
+    # Mapeamento das horas do dia para uma ordem específica
+    horas_dia_ordem = ['7 h', '8 h', '9 h', '10 h', '11 h', '12 h', '13 h', '14 h', '15 h', '16 h', '17 h', '18 h', '19 h', '20 h', '21 h']
+
+    # Organizar os dados por turma, dia da semana e hora da aula
+    professores = df['Teachers'].unique()
+
+    for professor in professores:
+        # Filtrar o DataFrame pela turma
+        professor_df = df[df['Teachers'] == professor]
+        # Organizar os dados por dia da semana e hora da aula
+        professor_df = professor_df.sort_values(by=['Day', 'Hour'])
+
+        # Criar um DataFrame vazio para o horário da turma
+        horario_turma = pd.DataFrame(index=horas_dia_ordem, columns=dias_da_semana_ordem)
+
+        # Preencher o DataFrame com os dados da turma
+        for index, row in professor_df.iterrows():
+            horario_turma.loc[row['Hour'], row['Day']] = f"{row['Subject']} - {row['Teachers']}"
+        
+        # Criar um nome para o arquivo Excel
+        excel_file = f'horario_professor_{professor}.xlsx'
+
+        # Salvar o horário da turma no arquivo Excel
+        horario_turma.to_excel(excel_file)
+
+
+def join_excel_professor():
+    # Pasta contendo os arquivos .xlsx
+    pasta_excel = '.'
+
+    # Listar todos os arquivos .xlsx na pasta
+    arquivos_excel = [arquivo for arquivo in os.listdir(pasta_excel) if arquivo.endswith('.xlsx')]
+
+    # Criar um DataFrame vazio para consolidar todos os dados
+    dados_consolidados = pd.DataFrame()
+
+    # Iterar sobre os arquivos e concatenar os DataFrames
+    for arquivo in arquivos_excel:
+        caminho_arquivo = os.path.join(pasta_excel, arquivo)
+        df_temp = pd.read_excel(caminho_arquivo)
+        dados_consolidados = pd.concat([dados_consolidados, df_temp])
+
+    # Salvar os dados consolidados em um único arquivo .xlsx
+    excel_output_file = 'horarios_professores_excel.xlsx'
+    dados_consolidados.to_excel(excel_output_file, index=False)
+
+```
